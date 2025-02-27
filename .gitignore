@@ -1,0 +1,5 @@
+.env
+logs/error.log
+old
+assets
+node_modules
