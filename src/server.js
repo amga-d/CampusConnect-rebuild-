@@ -52,7 +52,6 @@ app.use(passport.initialize());
 app.use(passport.session());
 // Auth Routes
 app.use("/api/v1/auth", authRoutes);
-app.use("/", HomeRouter);
 // Routes
 app.get("/signup", ensureUnauthenticated, (req, res) => {
   res.sendFile(path.join(__dirname, "views", "auth", "signup.html"));
@@ -61,6 +60,8 @@ app.get("/signup", ensureUnauthenticated, (req, res) => {
 app.get("/login", ensureUnauthenticated, (req, res) => {
   res.sendFile(path.join(__dirname, "views", "auth", "login.html"));
 });
+
+app.use("/", HomeRouter);
 
 // Connect to MongoDB
 mongoose

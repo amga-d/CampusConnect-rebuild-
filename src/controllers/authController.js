@@ -89,10 +89,19 @@ export const login = [
   errorHandler,
 ];
 
+export const logout = (req, res) => {
+  req.logout((err) => {
+    if (err) {
+      return next(err);
+    }
+    req.session.destroy(() => {
+      res.redirect("/login"); // Redirect to login after logout
+    });
+  });
+};
+
 // for development use only
 export const getUsers = async (req, res) => {
   const users = await User.find();
   return res.status(200).json(users);
 };
-
-
