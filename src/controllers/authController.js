@@ -10,7 +10,6 @@ const createAccount = async (req, res, next) => {
     const user = new User({ email, password, username });
     if (!user) throw new Error("error while Sign Up");
     await user.save();
-    res.status(201).json({ success: true });
     next();
   } catch (error) {
     next(error);
@@ -30,15 +29,14 @@ const validateSignUpCredentials = [
     .withMessage("Minimum Password length is 8 characters"),
   body("email")
     .trim()
-    .escape()``
+    .escape()
     .isEmail()
     .withMessage("Please enter a valid Email"),
 ];
 
 const validation = (req, res, next) => {
   const result = validationResult(req);
-  if (!result.isEmpty());
-  next(result.array());
+  if (!result.isEmpty()) next(result.array());
   const data = matchedData(req);
   req.body = data;
   next();
@@ -51,16 +49,43 @@ const errorHandler = (err, req, res, next) => {
     return res.status(309).json({ success: false, msg: message });
   } else if (Array.isArray(err)) {
     err.forEach((error) => (message[error.path] = error.msg));
-    return res.status(500).json({ success: false, msg: message });
+    return res.status(400).json({ success: false, msg: message });
   }
 
   res.status(500).json({ success: false, msg: err });
 };
 
+const validateLoginCredentials = [
+  body("password")
+    .trim()
+    .escape()
+    .isLength({ min: 8 })
+    .withMessage("Minimum Password length is 8 characters"),
+  body("email")
+    .trim()
+    .escape()
+    .isEmail()
+    .withMessage("Please enter a valid Email"),
+];
+
 export const signUp = [
   validateSignUpCredentials,
   validation,
   createAccount,
+  passport.authenticate("local"),
+  (req, res) => {
+    res.status(201).json({ success: true });
+  },
+  errorHandler,
+];
+
+export const login = [
+  validateLoginCredentials,
+  validation,
+  passport.authenticate("local", {
+    successRedirect: "/",
+    failureRedirect: "/login",
+  }),
   errorHandler,
 ];
 
@@ -69,3 +94,5 @@ export const getUsers = async (req, res) => {
   const users = await User.find();
   return res.status(200).json(users);
 };
+
+

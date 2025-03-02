@@ -1,0 +1,209 @@
+:root {
+    --primary-color: #1DA1F2;
+    --background-color: #F7F9FC;
+    --text-color: #2D3748;
+    --text-light: #718096;
+    --white: #FFFFFF;
+    --border-color: #E2E8F0;
+    --tag-open-bg: #dcfce7;
+    --tag-open-text: #166534;
+    --tag-closed-bg: #fee2e2;
+    --tag-closed-text: #991b1b;
+}
+
+.container {
+    /* max-width: 1200px; */
+    margin: 0 auto;
+    padding: 20px;
+    padding-top: 30px;
+}
+
+/* Header Styles */
+.page-header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.page-header h1 {
+    font-size: 2.5em;
+    margin-bottom: 10px;
+}
+
+.page-header p {
+    font-size: 1.2em;
+    color: #666;
+}
+
+/* Search Bar Styles */
+.search-bar {
+    display: flex;
+    margin-bottom: 20px;
+    justify-content: center;
+}
+
+.search-bar input {
+    flex-grow: 1;
+    padding: 10px;
+    font-size: 1em;
+    border: 1px solid #ddd;
+    border-radius: 4px 0 0 4px;
+    max-width: 700px;
+}
+
+.search-bar button {
+    padding: 10px 15px;
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: 0 4px 4px 0;
+    cursor: pointer;
+}
+
+.community-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 25px;
+    justify-content: center;
+    max-width: 80vw;
+    margin: 0 auto;
+}
+
+/* Community Card Styles */
+.community-card {
+    display: flex;
+    flex-direction: column;
+    background: var(--white);
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    height: 100%;  /* Ensure all cards are same height */
+    padding: 10px;
+}
+
+.community-card:hover {
+    /* transform: translateY(-5px); */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.card-header {
+    display: flex;
+    align-items: center;
+    padding: 15px;
+    /* background-color: var(--background-color); */
+}
+
+
+.community-logo {
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 50%;
+    margin-right: 15px;
+}
+
+.community-info h2 {
+    padding-inline: 15px;
+    font-size: 1.2em;
+}
+
+.community-type {
+    font-size: 0.8em;
+    color: #666;
+    /* margin: 5px 0 0; */
+    padding: 10px 0 0 15px;
+}
+
+.card-body {
+    flex: 1;  /* This will push the footer to the bottom */
+    display: flex;
+    flex-direction: column;
+    padding: 18px;
+}
+
+.community-description {
+    flex: 1;  
+    margin-bottom: 16px;    
+    color: #4b5563;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+.community-stats {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 12px;
+}
+
+.member-count {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    /* color: #666; */
+    font-size: 14px;
+    color: #6b7280;
+}
+
+
+.status {
+    font-size: 12px;
+    font-weight: 600;
+    padding: 8px 10px;
+    border-radius: 10px;
+}
+
+.status.open {
+    background-color: var(--tag-open-bg);
+    color: var(--tag-open-text);
+}
+.status.close{
+    background-color: var(--tag-closed-bg);
+    color: var(--tag-closed-text);
+}
+
+.card-footer {
+    padding: 16px;
+    border-top: 1px solid #e2e8f0;
+    margin-top: auto;  /* Push footer to bottom */
+}
+
+.content-wrapper {
+    flex: 1;  /* This ensures content takes available space */
+}
+
+.view-btn {
+    width: 100%;
+    background: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: 6px;
+    padding: 8px 16px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.view-btn:hover {
+    background: #0284c7;
+}
+
+.view-btn:active {
+    transform: translateY(0);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .community-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .category-tabs {
+        flex-wrap: wrap;
+    }
+
+    .tab {
+        margin-bottom: 10px;
+    }
+}
