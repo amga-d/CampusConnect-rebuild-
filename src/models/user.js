@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import { hashPassword } from "../config/hasher.js";
+import { compare, hashPassword } from "../config/hasher.js";
 const userSchema = new mongoose.Schema({
   email: {
     type: String,
@@ -18,10 +18,24 @@ const userSchema = new mongoose.Schema({
   },
 });
 
-// userSchema.pre('save',async function(next){
-//     this.password = hashPassword(this.password)
-//     next()
-// })
+userSchema.pre("save", async function (next) {
+  console.log(this.password);
+  this.password = await hashPassword(this.password);
+  console.log(this.password);
+  next();
+});
+
+userSchema.statics.login = async function (email, password) {
+  const user = await this.findOne({ email });
+  if (user) {
+    console.log(password, user.password);
+    const auth = await compare(password, user.password);
+    if (auth) {
+      return user;
+    }
+  }
+  throw Error("Incorrect credentials");
+};
 
 const User = mongoose.model("User", userSchema);
 export default User;

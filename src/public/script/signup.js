@@ -13,18 +13,18 @@ form.addEventListener("submit", async (e) => {
     return;
   }
   try {
-    const request = await fetch("/api/v1/auth/signUp", {
+    const res = await fetch("/api/v1/auth/signUp", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       body: data,
     });
-    const response = await request.json();
 
-    if (response.success) {
-      window.location.href = "/";
+    if (res.ok) {
+      window.location.href = res.url;
     } else {
+      const response = await res.json();
       showErrors(response.msg);
     }
   } catch (err) {
@@ -35,6 +35,7 @@ form.addEventListener("submit", async (e) => {
 const username_error = document.querySelector(".username-error");
 const email_error = document.querySelector(".email-error");
 const password_error = document.querySelector(".password-error");
+
 const showErrors = (message) => {
   console.log(message);
   if (message.username) {
