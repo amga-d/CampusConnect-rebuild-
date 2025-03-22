@@ -9,6 +9,7 @@ import session, { Store } from "express-session";
 import MongoStore from "connect-mongo";
 import morgan from "morgan";
 import HomeRouter from "./routes/homeRouter.js";
+
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
@@ -61,14 +62,14 @@ app.get("/login", ensureUnauthenticated, (req, res) => {
   res.sendFile(path.join(__dirname, "views", "auth", "login.html"));
 });
 
-app.use("/", HomeRouter);
+app.use(HomeRouter);
 
 // Connect to MongoDB
 mongoose
   .connect(process.env.MONG_URI)
   .then(() => {
     app.listen(PORT, () => {
-      console.log(`Server is running on port ${PORT}`);
+      console.log(`Server is running on port ${PORT} http://0.0.0.0:${PORT}`);
     });
   })
   .catch((error) => {

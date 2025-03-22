@@ -8,35 +8,33 @@ const ensureAuthenticated = (req, res, next) => {
   res.redirect("/login"); // Redirects to login page if not logged in
 };
 
-router.use(ensureAuthenticated);
-
-router.get("/", (req, res) => {
+router.get("/", ensureAuthenticated, (req, res) => {
   const userProfile =
     "/img/users/profiles/3a72a6e466e3d08aefc469e4e680498f.jpg";
   res.render("home", { userProfile });
 });
 
-router.get("/home", (req, res) => {
+router.get("/home", ensureAuthenticated, (req, res) => {
   res.render("home/home-dashboard");
 });
 
-router.get("/discover", (req, res) => {
+router.get("/discover", ensureAuthenticated, (req, res) => {
   res.render("home/discover");
 });
 
-router.get("/myCommunities", (req, res) => {
+router.get("/myCommunities", ensureAuthenticated, (req, res) => {
   res.render("home/myCommunities");
 });
-router.get("/events", (req, res) => {
+router.get("/events", ensureAuthenticated, (req, res) => {
   res.render("home/events");
 });
-router.get("/news", (req, res) => {
+router.get("/news", ensureAuthenticated, (req, res) => {
   res.render("home/news");
 });
-router.get("/newcommunity", (req, res) => {
+router.get("/newcommunity", ensureAuthenticated, (req, res) => {
   res.render("home/newcommunity");
 });
-router.get("/profile", (req, res) => {
+router.get("/profile", ensureAuthenticated, (req, res) => {
   res.render("home/profile");
 });
 
