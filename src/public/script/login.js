@@ -19,24 +19,25 @@ form.addEventListener("submit", async (e) => {
   e.preventDefault();
 
   const email = form.email.value;
-  const password = form.email.value;
+  const password = form.password.value;
 
   if (email === "" || password === "") {
     return;
   }
   const data = JSON.stringify({ email, password });
   try {
-    const request = await fetch("/api/v1/auth/login", {
+    const res = await fetch("/api/v1/auth/login", {
       headers: {
         "Content-Type": "application/json",
       },
       method: "POST",
       body: data,
     });
-    if (request.ok) {
-      window.location.href = request.url;
+    if (res.ok) {
+      window.location.href = res.url;
     } else {
-      console.log("bad Credentials");
+      const json = await res.json();
+      console.table(json?.msg);
     }
   } catch (error) {
     console.log(error);
