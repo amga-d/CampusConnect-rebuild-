@@ -1,13 +1,6 @@
 import { Strategy } from "passport-jwt";
 import User from "../models/user.js";
-import dotenv from "dotenv";
-import { fileURLToPath } from "url";
-import path from "path";
-import { model } from "mongoose";
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
-dotenv.config(path.join(__dirname, "..", "..", ".env"));
+import { jwtSecret } from "./config.js";
 
 // import { Strategy } from "passport-local";
 // import { compare } from "./hasher.js";
@@ -36,7 +29,7 @@ const cookieExtractor = (req) => {
 
 const opts = {
   jwtFromRequest: cookieExtractor,
-  secretOrKey: process.env.JWT_SECRET,
+  secretOrKey: jwtSecret,
 };
 
 export default (passport) => {
