@@ -14,7 +14,7 @@ import authRoutes from "./routes/authRoutes.js";
 import homeRoutes from "./routes/homeRouter.js";
 
 import { isUserUnAuthenticated } from "./middlewares/authenticationMid.js";
-import { port, mongUrl } from "./config/config.js";
+import { nodeEnv, port, mongUrl } from "./config/config.js";
 import { fileURLToPath } from "url";
 
 const __filename = fileURLToPath(import.meta.url);
@@ -33,7 +33,9 @@ app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
 
 // Middleware
-app.use(helmet());
+if (nodeEnv === "development") {
+  app.use(helmet());
+}
 app.use(compression());
 app.use(limiter);
 app.use(morgan("tiny"));
@@ -44,7 +46,6 @@ app.use(express.static(path.join(__dirname, "public")));
 app.use(passport.initialize());
 
 configurePassport(passport);
-
 
 // Auth Routes
 app.use("/api/v1/auth", authRoutes);
