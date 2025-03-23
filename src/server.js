@@ -3,22 +3,27 @@ import dotevn from "dotenv";
 import mongoose from "mongoose";
 import path from "path";
 import passport from "passport";
-// import MongoStore from "connect-mongo";
-// import session from "express-session";
 import morgan from "morgan";
 import jwt from "jsonwebtoken";
 import cookieParser from "cookie-parser";
+import helmet from "helmet";
+import compression from "compression";
+import RateLimit from "express-rate-limit";
 
 import configurePassport from "./config/passport.js";
 import authRoutes from "./routes/authRoutes.js";
-import HomeRouter from "./routes/homeRouter.js";
+import homeRoutes from "./routes/homeRouter.js";
 
-import { fileURLToPath } from "url";
 import { isUserUnAuthenticated } from "./middlewares/authenticationMid.js";
+import { fileURLToPath } from "url";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+const limiter = RateLimit({
+  windowMs: 1 * 60 * 1000, // 1 minute
+  max: 50,
+});
 // Load environment variables
 dotevn.config(path.join(__dirname, "..", ".env"));
 
@@ -32,6 +37,9 @@ app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
 
 // Middleware
+app.use(helmet());
+app.use(compression());
+app.use(limiter);
 app.use(morgan("tiny"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
@@ -101,7 +109,6 @@ app.get("/checkjwt", (req, res) => {
   }
 });
 
-
 // Auth Routes
 app.use("/api/v1/auth", authRoutes);
 // Routes
@@ -113,7 +120,7 @@ app.get("/login", isUserUnAuthenticated, (req, res) => {
   res.sendFile(path.join(__dirname, "views", "auth", "login.html"));
 });
 
-app.use(HomeRouter);
+app.use(homeRoutes);
 
 // Connect to MongoDB
 mongoose
