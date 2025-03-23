@@ -1,6 +1,7 @@
 import { matchedData, validationResult } from "express-validator";
 import jwt from "jsonwebtoken";
 import User from "../models/user.js";
+import { jwtSecret, nodeEnv } from "../config/config.js";
 
 // validation,
 // createAccount,
@@ -27,11 +28,12 @@ export const signUp = async (req, res) => {
 
     // create the token
     const payload = { id: user.id, name: user.name };
-    const token = jwt.sign(payload, process.env.JWT_SECRET, {
+    const token = jwt.sign(payload, jwtSecret, {
       expiresIn: "1h",
     });
     res.cookie("jwt", token, {
       httpOnly: true,
+      secure: nodeEnv === "production",
       sameSite: "Strict",
       maxAge: 1000 * 60 * 60,
     });
@@ -54,12 +56,13 @@ export const login = async (req, res) => {
   try {
     const user = await User.login(email, password);
     const payload = { id: user.id, name: user.name };
-    const token = jwt.sign(payload, process.env.JWT_SECRET, {
+    const token = jwt.sign(payload, jwtSecret, {
       expiresIn: "1h",
     });
 
     res.cookie("jwt", token, {
       httpOnly: true,
+      secure: nodeEnv === "production",
       sameSite: "Strict", // CSRF protection
       maxAge: 1000 * 60 * 60,
     });
@@ -72,6 +75,7 @@ export const login = async (req, res) => {
 
 export const logout = (req, res) => {
   res.clearCookie("jwt", {
+    secure: nodeEnv === "production",
     httpOnly: true,
     sameSite: "Strict", // CSRF protection
   });
