@@ -3,7 +3,6 @@ document
   .addEventListener("click", function (event) {
     event.preventDefault(); // Prevent form submission
   });
-console.log("sdfa");
 document.getElementById("show-password").addEventListener("click", function () {
   const passwordfield = document.getElementById("passwordfield");
   if (passwordfield.type == "password") {
@@ -34,7 +33,7 @@ form.addEventListener("submit", async (e) => {
       body: data,
     });
     if (res.ok) {
-      window.location.href = res.url;
+      window.location.assign(res.url);
     } else {
       const json = await res.json();
       console.table(json?.msg);

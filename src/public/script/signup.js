@@ -7,9 +7,7 @@ form.addEventListener("submit", async (e) => {
   const password = form.password.value;
 
   const data = JSON.stringify({ email, username, password });
-  console.log(data);
   if (email === "" || username === "" || password === "") {
-    console.log("nan");
     return;
   }
   try {
@@ -22,7 +20,7 @@ form.addEventListener("submit", async (e) => {
     });
 
     if (res.ok) {
-      window.location.href = res.url;
+      window.location.assign(res.url);
     } else {
       const response = await res.json();
       showErrors(response.msg);

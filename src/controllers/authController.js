@@ -79,7 +79,7 @@ export const logout = (req, res) => {
     httpOnly: true,
     sameSite: "Strict", // CSRF protection
   });
-  res.redirect("/login");
+  res.redirect("/");
 };
 
 const handleLoginError = (err, res) => {

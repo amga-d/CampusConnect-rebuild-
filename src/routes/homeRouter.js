@@ -1,7 +1,8 @@
 import { Router } from "express";
 import { authenticateUser } from "../middlewares/authenticationMid.js";
+import passport from "passport";
+
 const router = Router();
-router.use(authenticateUser);
 // const ensureAuthenticated = (req, res, next) => {
 //   if (req.isAuthenticated()) {
 //     return next();
@@ -10,10 +11,19 @@ router.use(authenticateUser);
 // };
 
 router.get("/", (req, res) => {
-  const userProfile =
-    "/img/users/profiles/3a72a6e466e3d08aefc469e4e680498f.jpg";
-  res.render("home", { userProfile });
+  passport.authenticate("jwt", { session: false }, (err, user, info) => {
+    if (!user || err) {
+      return res.render("landingPage");
+    } else {
+      req.user = user;
+      const userProfile =
+        "/img/users/profiles/3a72a6e466e3d08aefc469e4e680498f.jpg";
+      res.render("home", { userProfile });
+    }
+  })(req, res);
 });
+
+router.use(authenticateUser);
 
 router.get("/home", (req, res) => {
   res.render("home/home-dashboard");
