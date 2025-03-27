@@ -12,6 +12,7 @@ model User {
   id Int @id @default(autoincrement())
   email String @unique
   password String
+  name String
   createdAt DateTime @default(now())
   role Role @default(USER)
   profile Profile?
@@ -19,7 +20,6 @@ model User {
 }
 
 model Profile {
-  name String
   imageUrl String?
   brithDate DateTime
   gender Gender
