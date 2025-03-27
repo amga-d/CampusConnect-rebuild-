@@ -33,7 +33,7 @@ app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
 
 // Middleware
-if (nodeEnv === "development") {
+if (nodeEnv !== "development") {
   app.use(helmet());
 }
 app.use(compression());
