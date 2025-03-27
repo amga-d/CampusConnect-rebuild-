@@ -1,6 +1,6 @@
 import { matchedData, validationResult } from "express-validator";
 import jwt from "jsonwebtoken";
-import User from "../models/user.js";
+import { createUser, loginUser } from "../models/user.js";
 import { jwtSecret, nodeEnv } from "../config/config.js";
 
 // validation,
@@ -20,14 +20,12 @@ export const signUp = async (req, res) => {
   const { username, email, password } = matchedData(req);
 
   try {
-    const user = new User({ email, password, username });
+    const userId = await createUser(username, email, password);
 
-    if (!user) throw Error("Error while Signing up");
-
-    await user.save();
+    if (!userId) throw Error("Error while Signing up");
 
     // create the token
-    const payload = { id: user.id, name: user.name };
+    const payload = { id: userId };
     const token = jwt.sign(payload, jwtSecret, {
       expiresIn: "1h",
     });
@@ -54,8 +52,8 @@ export const login = async (req, res) => {
   const { email, password } = matchedData(req);
 
   try {
-    const user = await User.login(email, password);
-    const payload = { id: user.id, name: user.name };
+    const userId = await loginUser(email, password);
+    const payload = { id: userId };
     const token = jwt.sign(payload, jwtSecret, {
       expiresIn: "1h",
     });
@@ -85,16 +83,8 @@ export const logout = (req, res) => {
 const handleLoginError = (err, res) => {
   let message = { email: "", password: "" };
   let statusCode = 500;
-
-  if (err.message === "Incorrect credentials") {
-    message = { email: "Incorrect Email", password: "Incorrect Password" };
-    statusCode = 400;
-  } else if (Array.isArray(err)) {
-    err.forEach((error) => (message[error.path] = error.msg));
-    statusCode = 400;
-  } else {
-    message = { err: "Internal Server Error" }; // TODO: handle err in the frontend
-  }
+  // TODO: Handle prisma errors
+  message = { err: "Internal Server Error" }; // TODO: handle err in the frontend
   return res.status(statusCode).json({ success: false, msg: message });
 };
 
@@ -102,12 +92,10 @@ const handleSignUpError = (err, res) => {
   let message = { username: "", email: "", password: "" };
   let statusCode = 500;
 
-  if (err?.code === 11000) {
+  // TODO: Handle prisma errors
+  if (err?.code === "P2002") {
     message.email = "Email is already used";
     statusCode = 409;
-  } else if (Array.isArray(err)) {
-    err.forEach((error) => (message[error.path] = error.msg));
-    statusCode = 400;
   } else {
     message = { err: "Internal server Error" };
   }
