@@ -1,5 +1,5 @@
 import { Strategy } from "passport-jwt";
-import { findUserById } from "../models/user.js";
+import { deserializeUserById } from "../models/user.js";
 import { jwtSecret } from "./config.js";
 
 // import { Strategy } from "passport-local";
@@ -37,7 +37,7 @@ export default (passport) => {
   passport.use(
     new Strategy(opts, async (jwt_payload, done) => {
       try {
-        const user = await findUserById(jwt_payload.id);
+        const user = await deserializeUserById(jwt_payload.id);
         if (user) {
           return done(null, user);
         }
@@ -52,7 +52,7 @@ export default (passport) => {
 
   passport.deserializeUser(async (id, done) => {
     try {
-      const user = await findUserById(id);
+      const user = await deserializeUserById(id);
       if (!user) {
         return done(new Error("User not found"), false);
       }
