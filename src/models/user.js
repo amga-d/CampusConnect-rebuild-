@@ -81,6 +81,7 @@ const setUpProfile = async (id, profileImage, brithdate, gender, bio) => {
           gender: gender,
           imageUrl: profileImage,
           brithDate: new Date(brithdate),
+          bio: bio,
         },
       },
     },
@@ -88,18 +89,6 @@ const setUpProfile = async (id, profileImage, brithdate, gender, bio) => {
   return user;
 };
 
-// create: [
-// {
-//   title: "first post ever",
-//   published: true,
-//   categories: {
-//     create: [
-//       {
-//         name: "example",
-//       },
-//     ],
-//   },
-// },
 
 // this method to deserialized User from the database for passport middleware
 const deserializeUserById = async (id) => {
