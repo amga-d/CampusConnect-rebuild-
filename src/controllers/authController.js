@@ -25,7 +25,7 @@ export const signUp = async (req, res) => {
     if (!userId) throw Error("Error while Signing up");
 
     // create the token
-    const payload = { id: userId, hasProfile: false };
+    const payload = { id: userId };
     const token = jwt.sign(payload, jwtSecret, {
       expiresIn: "1h",
     });
@@ -53,8 +53,7 @@ export const login = async (req, res) => {
 
   try {
     const { id, hasProfile } = await loginUser(email, password);
-    const payload = { id, hasProfile };
-    console.log(payload);
+    const payload = { id };
     const token = jwt.sign(payload, jwtSecret, {
       expiresIn: "1h",
     });
@@ -89,7 +88,10 @@ const handleLoginError = (err, res) => {
       email: "Incorrect Credentials",
       password: "Incorrect Credentials",
     };
-  else {
+  else if (Array.isArray(err)) {
+    err.forEach((error) => (message[error.path] = error.msg));
+    statusCode = 400;
+  } else {
     message = { err: "Internal Server Error" }; // TODO: handle err in the frontend
   }
   // TODO: Handle prisma errors
@@ -104,6 +106,9 @@ const handleSignUpError = (err, res) => {
   if (err?.code === "P2002") {
     message.email = "Email is already used";
     statusCode = 409;
+  } else if (Array.isArray(err)) {
+    err.forEach((error) => (message[error.path] = error.msg));
+    statusCode = 400;
   } else {
     message = { err: "Internal server Error" };
   }

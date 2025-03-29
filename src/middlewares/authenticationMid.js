@@ -60,3 +60,11 @@ export const authenticateUser = (req, res, next) => {
     next();
   })(req, res, next);
 };
+
+export const authenticatePostReq = (req, res, next) => {
+  passport.authenticate("jwt", { session: false }, (err, user, info) => {
+    if (!user || err) return res.sendStatus(401);
+    req.user = user;
+    next();
+  })(req, res, next);
+};

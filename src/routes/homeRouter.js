@@ -28,31 +28,27 @@ router.get("/", (req, res) => {
   })(req, res);
 });
 
-
-
-router.use(authenticateUser);
-
-router.get("/home", (req, res) => {
+router.get("/home", authenticateUser, (req, res) => {
   res.render("home/home-dashboard");
 });
 
-router.get("/discover", (req, res) => {
+router.get("/discover", authenticateUser, (req, res) => {
   res.render("home/discover");
 });
 
-router.get("/myCommunities", (req, res) => {
+router.get("/myCommunities", authenticateUser, (req, res) => {
   res.render("home/myCommunities");
 });
-router.get("/events", (req, res) => {
+router.get("/events", authenticateUser, (req, res) => {
   res.render("home/events");
 });
-router.get("/news", (req, res) => {
+router.get("/news", authenticateUser, (req, res) => {
   res.render("home/news");
 });
-router.get("/newcommunity", (req, res) => {
+router.get("/newcommunity", authenticateUser, (req, res) => {
   res.render("home/newcommunity");
 });
-router.get("/profile", (req, res) => {
+router.get("/profile", authenticateUser, (req, res) => {
   res.render("home/profile");
 });
 

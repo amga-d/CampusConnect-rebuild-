@@ -1,14 +1,13 @@
 import { Router } from "express";
-import { authenticateUser } from "../middlewares/authenticationMid.js";
-
+import { authenticatePostReq } from "../middlewares/authenticationMid.js";
+import { setProfile } from "../controllers/setProfileController.js";
 const router = new Router();
 
-router.get("/setProfile", authenticateUser, (req, res) => {
-  res.render("setProfile");
-});
+const getUserName = (req, res, next) => {
+  req.name = "amgad";
+  next();
+};
 
-router.post("/setProfile", (req, res) => {
-  res.send("uploaded successfully");
-});
+router.post("/setProfile", authenticatePostReq, getUserName, setProfile);
 
 export default router;
