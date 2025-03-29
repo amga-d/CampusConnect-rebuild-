@@ -21,6 +21,7 @@
   },
   "homepage": "https://github.com/amga-d/CampusConnect-rebuild-#readme",
   "dependencies": {
+    "@prisma/client": "^6.5.0",
     "bcrypt": "^5.1.1",
     "compression": "^1.8.0",
     "cookie-parser": "^1.4.7",
@@ -30,15 +31,15 @@
     "express-rate-limit": "^7.5.0",
     "express-validator": "^7.2.1",
     "helmet": "^8.1.0",
-    "jsonwebtoken": "^9.0.2",
-    "mongoose": "^8.11.0",
     "morgan": "^1.10.0",
     "passport": "^0.7.0",
     "passport-jwt": "^4.0.1",
     "passport-local": "^1.0.0"
   },
   "devDependencies": {
-    "eslint": "^9.21.0",
-    "globals": "^16.0.0"
+    "@eslint/js": "^9.23.0",
+    "eslint": "^9.23.0",
+    "globals": "^16.0.0",
+    "prisma": "^6.5.0"
   }
 }

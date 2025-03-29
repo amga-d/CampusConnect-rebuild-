@@ -1,0 +1,122 @@
+// model Announcement {
+//   announcement_id Int       @id @default(autoincrement())
+//   community_id    Int
+//   user_id         Int
+//   content         String?   @db.Text
+//   created_at      DateTime  @default(now()) @db.Timestamp(0)
+//   Community       Community @relation(fields: [community_id], references: [community_id], onDelete: Cascade, onUpdate: NoAction, map: "announcements_ibfk_1")
+//   User            User      @relation(fields: [user_id], references: [user_id], onDelete: Cascade, onUpdate: NoAction, map: "announcements_ibfk_2")
+
+//   @@index([community_id], map: "community_id")
+//   @@index([user_id], map: "user_id")
+// }
+
+// model Community {
+//   community_id       Int                           @id @default(autoincrement())
+//   community_name     String                        @db.VarChar(255)
+//   description        String?                       @db.Text
+//   profile_image      String?                       @db.VarChar(255)
+//   created_by         Int
+//   recruitment_status Community_recruitment_status?
+//   created_at         DateTime                      @default(now()) @db.Timestamp(0)
+//   community_type     String?                       @db.VarChar(50)
+//   community_privacy  Community_community_privacy
+//   Announcement       Announcement[]
+//   User               User                          @relation(fields: [created_by], references: [user_id], onDelete: NoAction, onUpdate: NoAction, map: "communities_ibfk_1")
+//   Event              Event[]
+//   Membership         Membership[]
+
+//   @@index([created_by], map: "created_by")
+// }
+
+// model Event {
+//   event_id     Int       @id @default(autoincrement())
+//   community_id Int
+//   creator_id   Int
+//   event_name   String    @db.VarChar(255)
+//   description  String?   @db.Text
+//   image_path   String?   @db.VarChar(255)
+//   created_at   DateTime  @default(now()) @db.Timestamp(0)
+//   Community    Community @relation(fields: [community_id], references: [community_id], onDelete: Cascade, onUpdate: NoAction, map: "events_ibfk_1")
+//   User         User      @relation(fields: [creator_id], references: [user_id], onDelete: Cascade, onUpdate: NoAction, map: "events_ibfk_2")
+
+//   @@index([community_id], map: "community_id")
+//   @@index([creator_id], map: "creator_id")
+// }
+
+// model Membership {
+//   membership_id     Int                          @id @default(autoincrement())
+//   community_id      Int
+//   user_id           Int
+//   role              Membership_role
+//   joined_at         DateTime                     @default(now()) @db.Timestamp(0)
+//   membership        String?                      @db.VarChar(30)
+//   membership_status Membership_membership_status
+//   Community         Community                    @relation(fields: [community_id], references: [community_id], onDelete: Cascade, onUpdate: NoAction, map: "community_members_ibfk_1")
+//   User              User                         @relation(fields: [user_id], references: [user_id], onDelete: Cascade, onUpdate: NoAction, map: "community_members_ibfk_2")
+
+//   @@index([community_id], map: "community_id")
+//   @@index([user_id], map: "user_id")
+// }
+
+// model News {
+//   news_id     Int      @id @default(autoincrement())
+//   news_name   String   @db.VarChar(255)
+//   description String?  @db.Text
+//   created_at  DateTime @default(now()) @db.Timestamp(0)
+//   news_image  String?  @db.VarChar(255)
+// }
+
+// model Post {
+//   id        Int      @id @default(autoincrement())
+//   title     String   @db.VarChar(255)
+//   createdAt DateTime @default(now()) @db.Timestamp(6)
+//   content   String?
+//   published Boolean  @default(false)
+//   User      User     @relation(fields: [authorId], references: [user_id])
+//   authorId  Int
+
+// }
+
+// model User {
+//   user_id       Int            @id @default(autoincrement())
+//   name          String         @db.VarChar(255)
+//   email         String         @unique(map: "email") @db.VarChar(255)
+//   password      String         @db.VarChar(255)
+//   profile_image String?        @db.VarChar(255)
+//   bio           String?        @db.Text
+//   created_at    DateTime       @default(now()) @db.Timestamp(0)
+//   birthdate     DateTime?      @db.Date
+//   gender        User_gender?
+//   // announcements  Announcement[]
+//   // communities     Community[]
+//   // events         Event[]
+//   // memberships    Membership[]
+//   posts          Post[]
+// }
+
+// enum Membership_role {
+//   admin
+//   member
+//   core_member
+// }
+
+// enum Community_recruitment_status {
+//   open
+//   closed
+// }
+
+// enum Membership_membership_status {
+//   approved
+//   pending
+// }
+
+// enum Community_community_privacy {
+//   public
+//   private
+// }
+
+// enum User_gender {
+//   MALE
+//   FEMALE
+// }

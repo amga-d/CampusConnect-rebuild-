@@ -1,14 +1,13 @@
 import express from "express";
-import mongoose from "mongoose";
 import path from "path";
 import passport from "passport";
 import morgan from "morgan";
-import jwt from "jsonwebtoken";
 import cookieParser from "cookie-parser";
 import helmet from "helmet";
 import compression from "compression";
 import RateLimit from "express-rate-limit";
 
+import prisma from "./config/prisma.js";
 import configurePassport from "./config/passport.js";
 import authRoutes from "./routes/authRoutes.js";
 import homeRoutes from "./routes/homeRouter.js";
@@ -61,14 +60,17 @@ app.get("/login", isUserUnAuthenticated, (req, res) => {
 
 app.use(homeRoutes);
 
-// Connect to MongoDB
-mongoose
-  .connect(mongUrl)
-  .then(() => {
-    app.listen(port, () => {
-      console.log(`Server is running on port ${port} http://0.0.0.0:${port}`);
+// Start Server
+const startServer = () => {
+  prisma
+    .$connect()
+    .then(() => {
+      app.listen(port, () => {
+        console.log(`Server is running on port ${port} http://0.0.0.0:${port}`);
+      });
+    })
+    .catch((error) => {
+      console.log(error);
     });
-  })
-  .catch((error) => {
-    console.log(error);
-  });
+};
+startServer();
