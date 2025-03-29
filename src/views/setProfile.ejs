@@ -37,11 +37,11 @@
                 <label>Gender</label>
                 <div class="radio-group">
                     <label class="radio-option">
-                        <input type="radio" name="gender" value="male" required>
+                        <input type="radio" name="gender" value="MALE" required>
                         Male
                     </label>
                     <label class="radio-option">
-                        <input type="radio" name="gender" value="female">
+                        <input type="radio" name="gender" value="FEMALE">
                         Female
                     </label>
                 </div>
@@ -55,53 +55,8 @@
         </form>
     </div>
 
-    <script>
-        // Image preview functionality
-        const profileInput = document.getElementById('profileImage');
-        const previewImage = document.getElementById('previewImage');
-        const profilePreview = document.getElementById('profilePreview');
-        const previewIcon = profilePreview.querySelector('.default-profile');
-        const deleteImage = document.querySelector('.delete-image');
+    <script src="/script/setProfile.js">
 
-        profileInput.addEventListener('change', function () {
-            const file = this.files[0];
-            if (file) {
-                const reader = new FileReader();
-
-                reader.onload = function (e) {
-                    previewImage.src = e.target.result;
-                    previewImage.style.display = 'block';
-                    previewIcon.style.display = 'none';
-                    deleteImage.style.display = 'flex';
-                }
-
-                reader.readAsDataURL(file);
-            }
-        });
-
-        // Add delete functionality
-        deleteImage.addEventListener('click', function () {
-            // Reset the file input
-            profileInput.value = '';
-
-            // Hide the preview image and show the default icon
-            previewImage.style.display = 'none';
-            previewIcon.style.display = 'block';
-            deleteImage.style.display = 'none';
-
-        });
-
-        // Form submission
-        document.getElementById('profileForm').addEventListener('submit', async function (e) {
-            e.preventDefault();
-
-            const res = await fetch("/setProfile",{
-                headers:{
-                    "Content-Type": "applic"
-                }
-            })
-            alert('Profile updated successfully!');
-        });
     </script>
 </body>
 

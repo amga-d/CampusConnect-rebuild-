@@ -72,6 +72,35 @@ const createUser = async (name, email, password) => {
   return id;
 };
 
+const setUpProfile = async (id, profileImage, brithdate, gender, bio) => {
+  const user = await prisma.user.update({
+    where: { id: id },
+    data: {
+      profile: {
+        create: {
+          gender: gender,
+          imageUrl: profileImage,
+          brithDate: new Date(brithdate),
+        },
+      },
+    },
+  });
+  return user;
+};
+
+// create: [
+// {
+//   title: "first post ever",
+//   published: true,
+//   categories: {
+//     create: [
+//       {
+//         name: "example",
+//       },
+//     ],
+//   },
+// },
+
 // this method to deserialized User from the database for passport middleware
 const deserializeUserById = async (id) => {
   const user = await prisma.user.findUnique({
@@ -82,7 +111,7 @@ const deserializeUserById = async (id) => {
   return user;
 };
 
-export { createUser, loginUser, deserializeUserById };
+export { createUser, loginUser, deserializeUserById, setUpProfile };
 
 // signUp("amgad2@gmail.com", "1234").catch((error) => {
 //   if (error.code === "P2002") {
