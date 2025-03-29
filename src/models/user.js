@@ -46,11 +46,12 @@ import { compare, hashPassword } from "../config/hasher.js";
 const loginUser = async (email, password) => {
   const user = await prisma.user.findUnique({
     where: { email: email },
-    select: { id: true, password: true },
+    select: { id: true, password: true, profile: { select: { userId: true } } },
   });
   if (user) {
     if (await compare(password, user.password)) {
-      return user.id;
+      const hasProfile = user.profile !== null;
+      return { id: user.id, hasProfile };
     }
   }
   throw Error("Incorrect Credentials");

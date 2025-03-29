@@ -1,5 +1,8 @@
 import { Router } from "express";
-import { authenticateUser } from "../middlewares/authenticationMid.js";
+import {
+  authenticateUser,
+  IsProfile,
+} from "../middlewares/authenticationMid.js";
 import passport from "passport";
 
 const router = Router();
@@ -9,19 +12,23 @@ const router = Router();
 //   }
 //   res.redirect("/login"); // Redirects to login page if not logged in
 // };
-
 router.get("/", (req, res) => {
   passport.authenticate("jwt", { session: false }, (err, user, info) => {
     if (!user || err) {
       return res.render("landingPage");
-    } else {
-      req.user = user;
+    }
+    // store user in req object
+    req.user = user;
+    // Check if user has profile
+    IsProfile(req, res, () => {
       const userProfile =
         "/img/users/profiles/3a72a6e466e3d08aefc469e4e680498f.jpg";
       res.render("home", { userProfile });
-    }
+    });
   })(req, res);
 });
+
+
 
 router.use(authenticateUser);
 

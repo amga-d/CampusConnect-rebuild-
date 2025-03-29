@@ -11,9 +11,10 @@ import prisma from "./config/prisma.js";
 import configurePassport from "./config/passport.js";
 import authRoutes from "./routes/authRoutes.js";
 import homeRoutes from "./routes/homeRouter.js";
-
+import profileRoutes from "./routes/setProfileRouter.js";
+import multer from "multer";
 import { isUserUnAuthenticated } from "./middlewares/authenticationMid.js";
-import { nodeEnv, port, mongUrl } from "./config/config.js";
+import { nodeEnv, port } from "./config/config.js";
 import { fileURLToPath } from "url";
 
 const __filename = fileURLToPath(import.meta.url);
@@ -58,6 +59,7 @@ app.get("/login", isUserUnAuthenticated, (req, res) => {
   res.sendFile(path.join(__dirname, "views", "auth", "login.html"));
 });
 
+app.use(profileRoutes);
 app.use(homeRoutes);
 
 // Start Server
