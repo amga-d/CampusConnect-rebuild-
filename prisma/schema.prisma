@@ -23,6 +23,7 @@ model Profile {
   imageUrl String?
   brithDate DateTime
   gender Gender
+  bio String?
   user User @relation(fields: [userId],references: [id])
   userId Int @unique
 }
