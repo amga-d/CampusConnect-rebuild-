@@ -52,8 +52,8 @@ export const login = async (req, res) => {
   const { email, password } = matchedData(req);
 
   try {
-    const userId = await loginUser(email, password);
-    const payload = { id: userId };
+    const { id, hasProfile } = await loginUser(email, password);
+    const payload = { id };
     const token = jwt.sign(payload, jwtSecret, {
       expiresIn: "1h",
     });
@@ -83,8 +83,18 @@ export const logout = (req, res) => {
 const handleLoginError = (err, res) => {
   let message = { email: "", password: "" };
   let statusCode = 500;
+  if (err.message === "Incorrect Credentials")
+    message = {
+      email: "Incorrect Credentials",
+      password: "Incorrect Credentials",
+    };
+  else if (Array.isArray(err)) {
+    err.forEach((error) => (message[error.path] = error.msg));
+    statusCode = 400;
+  } else {
+    message = { err: "Internal Server Error" }; // TODO: handle err in the frontend
+  }
   // TODO: Handle prisma errors
-  message = { err: "Internal Server Error" }; // TODO: handle err in the frontend
   return res.status(statusCode).json({ success: false, msg: message });
 };
 
@@ -96,6 +106,9 @@ const handleSignUpError = (err, res) => {
   if (err?.code === "P2002") {
     message.email = "Email is already used";
     statusCode = 409;
+  } else if (Array.isArray(err)) {
+    err.forEach((error) => (message[error.path] = error.msg));
+    statusCode = 400;
   } else {
     message = { err: "Internal server Error" };
   }

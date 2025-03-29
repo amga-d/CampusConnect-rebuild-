@@ -46,11 +46,13 @@ import { compare, hashPassword } from "../config/hasher.js";
 const loginUser = async (email, password) => {
   const user = await prisma.user.findUnique({
     where: { email: email },
+    // select: { id: true, password: true, profile: { select: { userId: true } } },
     select: { id: true, password: true },
   });
   if (user) {
     if (await compare(password, user.password)) {
-      return user.id;
+      // const hasProfile = user.profile !== null;
+      return { id: user.id };
     }
   }
   throw Error("Incorrect Credentials");
@@ -70,15 +72,46 @@ const createUser = async (name, email, password) => {
   return id;
 };
 
-const findUserById = async (id) => {
-  const user = await prisma.user.findUnique({
+const setUpProfile = async (id, profileImage, brithdate, gender, bio) => {
+  const user = await prisma.user.update({
     where: { id: id },
+    data: {
+      profile: {
+        create: {
+          gender: gender,
+          imageUrl: profileImage,
+          brithDate: new Date(brithdate),
+        },
+      },
+    },
   });
-
   return user;
 };
 
-export { createUser, loginUser, findUserById };
+// create: [
+// {
+//   title: "first post ever",
+//   published: true,
+//   categories: {
+//     create: [
+//       {
+//         name: "example",
+//       },
+//     ],
+//   },
+// },
+
+// this method to deserialized User from the database for passport middleware
+const deserializeUserById = async (id) => {
+  const user = await prisma.user.findUnique({
+    where: { id: id },
+    select: { id: true, name: true, profile: { select: { userId: true } } },
+  });
+  user.profile = user.profile !== null;
+  return user;
+};
+
+export { createUser, loginUser, deserializeUserById, setUpProfile };
 
 // signUp("amgad2@gmail.com", "1234").catch((error) => {
 //   if (error.code === "P2002") {

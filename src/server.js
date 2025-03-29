@@ -11,9 +11,13 @@ import prisma from "./config/prisma.js";
 import configurePassport from "./config/passport.js";
 import authRoutes from "./routes/authRoutes.js";
 import homeRoutes from "./routes/homeRouter.js";
-
-import { isUserUnAuthenticated } from "./middlewares/authenticationMid.js";
-import { nodeEnv, port, mongUrl } from "./config/config.js";
+import profileRoutes from "./routes/setProfileRouter.js";
+import multer from "multer";
+import {
+  authenticateUser,
+  isUserUnAuthenticated,
+} from "./middlewares/authenticationMid.js";
+import { nodeEnv, port } from "./config/config.js";
 import { fileURLToPath } from "url";
 
 const __filename = fileURLToPath(import.meta.url);
@@ -44,10 +48,14 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
 app.use(passport.initialize());
 
+// Configuring Passport middleware
 configurePassport(passport);
+
+// Set up upload destination
 
 // Auth Routes
 app.use("/api/v1/auth", authRoutes);
+app.use(profileRoutes);
 
 // Routes
 app.get("/signup", isUserUnAuthenticated, (req, res) => {
@@ -56,6 +64,10 @@ app.get("/signup", isUserUnAuthenticated, (req, res) => {
 
 app.get("/login", isUserUnAuthenticated, (req, res) => {
   res.sendFile(path.join(__dirname, "views", "auth", "login.html"));
+});
+
+app.get("/setProfile", authenticateUser, (req, res) => {
+  res.render("setProfile");
 });
 
 app.use(homeRoutes);
