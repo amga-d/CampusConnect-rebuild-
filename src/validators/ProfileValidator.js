@@ -1,6 +1,6 @@
 import { body } from "express-validator";
 
-const validateBody = [
+const validateProfileData = [
   body("birthdate")
     .exists()
     .withMessage("Birthdate is required")
@@ -50,4 +50,4 @@ const validateBody = [
     .optional(),
 ];
 
-export { validateBody };
+export { validateProfileData };

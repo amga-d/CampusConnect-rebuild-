@@ -1,10 +1,10 @@
 import { Router } from "express";
-import { login, signUp, logout } from "../controllers/authController.js";
+import { login, signUp, logout } from "../../controllers/authController.js";
 import {
   validateLoginCredentials,
   validateSignUpCredentials,
-} from "../middlewares/authValidators.js";
-import { isUserUnAuthenticated } from "../middlewares/authenticationMid.js";
+} from "../../validators/authValidators.js";
+import { isUserUnAuthenticated } from "../../middlewares/authenticationMid.js";
 
 const router = Router();
 
@@ -18,6 +18,5 @@ router.post(
 router.post("/login", isUserUnAuthenticated, validateLoginCredentials, login);
 
 router.get("/logout", logout);
-// router.get("/getUsers", getUsers);
 
 export default router;

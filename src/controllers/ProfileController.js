@@ -5,14 +5,16 @@ import fsP from "fs/promises";
 import fs from "fs";
 import { setUpProfile } from "../models/user.js";
 import { matchedData, validationResult } from "express-validator";
-import { validateBody } from "../middlewares/setProfileValidator.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    const profilesDir = path.join(__dirname, "../uploads/users/profiles");
+    const profilesDir = path.join(
+      __dirname,
+      "../public/uploads/users/profiles"
+    );
     if (!fs.existsSync(profilesDir)) {
       fs.mkdirSync(profilesDir, { recursive: true });
     }
@@ -28,8 +30,6 @@ const storage = multer.diskStorage({
 });
 
 function fileFilter(req, file, cb) {
-  // The function should call `cb` with a boolean
-  // to indicate if the file should be accepted
   const fileTypes = /jpeg|jpg|png/;
   const extname = fileTypes.test(path.extname(file.originalname).toLowerCase());
   const mimeType = fileTypes.test(file.mimetype);
@@ -38,8 +38,6 @@ function fileFilter(req, file, cb) {
   } else {
     return cb(new Error("Only images (jpeg, jpg, png) are allowed!"));
   }
-  // To accept the file pass `true`, like so:
-  // You can always pass an error if something goes wrong:
 }
 
 const upload = multer({
@@ -66,15 +64,21 @@ const ErrorHandler = (err, res) => {
   }
 };
 
+// call this method after applying the upload middleware.
 const setProfile = [
-  // Apply the upload middleware first
-  upload.single("profile"),
-  validateBody,
   // Then validate and process the request
   async (req, res, next) => {
     // Check validation results
     const result = validationResult(req);
     if (!result.isEmpty()) {
+      // remove image if there is an error while saving data
+      if (req.file && req.file.path) {
+        if (fs.existsSync(req.file.path)) {
+          fsP.unlink(req.file.path).catch((err) => {
+            console.log(err);
+          });
+        }
+      }
       return next(result.array());
     }
 
@@ -107,9 +111,11 @@ const setProfile = [
     } catch (error) {
       // remove image if there is an error while saving data
       if (req.file && req.file.path) {
-        fsP.unlink(req.file.path).catch((err) => {
-          console.log(err);
-        });
+        if (fs.existsSync(req.file.path)) {
+          fsP.unlink(req.file.path).catch((err) => {
+            console.log(err);
+          });
+        }
       }
       return next(error);
     }
@@ -119,4 +125,4 @@ const setProfile = [
   (err, req, res, next) => ErrorHandler(err, res),
 ];
 
-export { setProfile };
+export { upload, setProfile };

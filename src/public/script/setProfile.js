@@ -49,7 +49,7 @@ profileForm.addEventListener("submit", async function (e) {
   formData.append("bio", bio);
 
   try {
-    const res = await fetch("/setProfile", {
+    const res = await fetch("/api/v1/profile/setProfile", {
       method: "POST",
       body: formData,
     });

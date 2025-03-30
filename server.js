@@ -7,17 +7,12 @@ import helmet from "helmet";
 import compression from "compression";
 import RateLimit from "express-rate-limit";
 
-import prisma from "./config/prisma.js";
-import configurePassport from "./config/passport.js";
-import authRoutes from "./routes/authRoutes.js";
-import homeRoutes from "./routes/homeRouter.js";
-import profileRoutes from "./routes/setProfileRouter.js";
-import multer from "multer";
-import {
-  authenticateUser,
-  isUserUnAuthenticated,
-} from "./middlewares/authenticationMid.js";
-import { nodeEnv, port } from "./config/config.js";
+import prisma from "./src/config/prisma.js";
+import configurePassport from "./src/config/passport.js";
+import authRoute from "./src/routes/api/authRoute.js";
+import profileRoute from "./src/routes/api/ProfileRoute.js";
+import viewRoute from "./src/routes/views/viewRoute.js";
+import { nodeEnv, port } from "./src/config/config.js";
 import { fileURLToPath } from "url";
 
 const __filename = fileURLToPath(import.meta.url);
@@ -33,44 +28,30 @@ const app = express();
 
 // Register view Engine
 app.set("view engine", "ejs");
-app.set("views", path.join(__dirname, "views"));
+app.set("views", path.join(__dirname, "src/views"));
 
-// Middleware
 if (nodeEnv !== "development") {
   app.use(helmet());
 }
+
+// Middleware
 app.use(compression());
 app.use(limiter);
 app.use(morgan("tiny"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
-app.use(express.static(path.join(__dirname, "public")));
 app.use(passport.initialize());
+// Set path for static files
+app.use(express.static(path.join(__dirname, "src/public")));
 
 // Configuring Passport middleware
 configurePassport(passport);
 
-// Set up upload destination
-
 // Auth Routes
-app.use("/api/v1/auth", authRoutes);
-app.use(profileRoutes);
-
-// Routes
-app.get("/signup", isUserUnAuthenticated, (req, res) => {
-  res.sendFile(path.join(__dirname, "views", "auth", "signup.html"));
-});
-
-app.get("/login", isUserUnAuthenticated, (req, res) => {
-  res.sendFile(path.join(__dirname, "views", "auth", "login.html"));
-});
-
-app.get("/setProfile", authenticateUser, (req, res) => {
-  res.render("setProfile");
-});
-
-app.use(homeRoutes);
+app.use("/api/v1/auth", authRoute);
+app.use("/api/v1/profile", profileRoute);
+app.use(viewRoute);
 
 // Start Server
 const startServer = () => {

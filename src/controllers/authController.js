@@ -3,15 +3,6 @@ import jwt from "jsonwebtoken";
 import { createUser, loginUser } from "../models/user.js";
 import { jwtSecret, nodeEnv } from "../config/config.js";
 
-// validation,
-// createAccount,
-// passport.authenticate("local"),
-// (req, res) => {
-//   res.status(201).json({ success: true });
-// },
-// errorHandler,
-// ];
-
 export const signUp = async (req, res) => {
   const result = validationResult(req);
   if (!result.isEmpty()) {
@@ -42,8 +33,6 @@ export const signUp = async (req, res) => {
   }
 };
 
-// export const login = [validateLoginCredentials, loginAuth, errorHandler];
-
 export const login = async (req, res) => {
   const result = validationResult(req);
 
@@ -52,7 +41,7 @@ export const login = async (req, res) => {
   const { email, password } = matchedData(req);
 
   try {
-    const { id, hasProfile } = await loginUser(email, password);
+    const { id } = await loginUser(email, password);
     const payload = { id };
     const token = jwt.sign(payload, jwtSecret, {
       expiresIn: "1h",
