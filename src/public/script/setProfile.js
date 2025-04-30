@@ -51,6 +51,9 @@ profileForm.addEventListener("submit", async function (e) {
   try {
     const res = await fetch("/api/v1/profile/setProfile", {
       method: "POST",
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
       body: formData,
     });
     if (!res.ok) {
